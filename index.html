@@ -16,10 +16,14 @@
   <div class="max-w-3xl mx-auto p-6">
     <h1 class="text-3xl font-bold mb-4 text-center">🧠 Mood-Based AI Task Bot</h1>
 
+    <!-- 🌙 Dark Mode Icon Only -->
     <div class="text-right mb-4">
-      <button onclick="toggleDarkMode()" class="bg-black text-white px-3 py-1 rounded">🌓 Toggle Dark Mode</button>
+      <button onclick="toggleDarkMode()" id="darkModeBtn" class="text-xl px-3 py-2 rounded-full bg-gray-300 dark:bg-gray-700">
+        🌙
+      </button>
     </div>
 
+    <!-- Mood Selector -->
     <div class="mb-6">
       <label for="mood" class="block text-lg font-medium mb-2">Your Current Mood:</label>
       <select id="mood" class="w-full p-2 border rounded">
@@ -32,17 +36,20 @@
       </select>
     </div>
 
+    <!-- Mood-Based Tasks -->
     <div id="taskContainer" class="hidden bg-white p-4 rounded shadow">
       <h2 class="text-xl font-semibold mb-2">📝 Suggested Tasks:</h2>
       <ul id="taskList" class="list-disc list-inside text-gray-800"></ul>
     </div>
 
+    <!-- Doubt Input Section -->
     <div class="mt-6">
       <label class="block text-lg font-medium mb-2">💬 Ask a Subject/Job Doubt:</label>
       <textarea id="doubt" class="w-full p-2 border rounded mb-2" rows="4" placeholder="Type your doubt here..."></textarea>
-      <button onclick="solveDoubt()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Solve with AI</button>
+      <button onclick="redirectToAIPage()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Solve with AI</button>
     </div>
 
+    <!-- Image Upload Section -->
     <div class="mt-6">
       <label class="block text-lg font-medium mb-2">📷 Upload Image for Analysis:</label>
       <input type="file" id="imageUpload" accept="image/*" class="mb-2" />
@@ -54,6 +61,7 @@
       <img id="resultImage" src="" alt="Analyzed Result" class="max-w-full h-auto" />
     </div>
 
+    <!-- Routine / Time Management Section -->
     <div class="mt-10">
       <h2 class="text-xl font-semibold mb-2">⏳ Time Management + Routine</h2>
       <label for="taskInput" class="block mb-1">Add Task:</label>
@@ -95,19 +103,21 @@
       }
     });
 
-    function solveDoubt() {
-      const doubt = document.getElementById("doubt").value.trim();
-      if (!doubt) {
-        alert("Please enter your doubt!");
-        return;
-      }
-
-      const query = encodeURIComponent(doubt);
-      window.open(`https://aimlapi.com/app?question=${query}`, "_blank");
+    function toggleDarkMode() {
+      const body = document.getElementById("mainBody");
+      const btn = document.getElementById("darkModeBtn");
+      body.classList.toggle("dark");
+      const isDark = body.classList.contains("dark");
+      btn.textContent = isDark ? "☀️" : "🌙";
     }
 
-    function toggleDarkMode() {
-      document.getElementById("mainBody").classList.toggle("dark");
+    function redirectToAIPage() {
+      const doubt = document.getElementById("doubt").value.trim();
+      if (!doubt) return alert("Please enter your doubt!");
+
+      const encoded = encodeURIComponent(doubt);
+      const url = `https://aimlapi.com/app/?query=${encoded}`;
+      window.open(url, "_blank");
     }
 
     function analyzeImage() {
@@ -116,7 +126,6 @@
       const imageResult = document.getElementById("imageResult");
 
       if (!fileInput.files.length) return alert("Please select an image!");
-
       resultImage.src = URL.createObjectURL(fileInput.files[0]);
       imageResult.classList.remove("hidden");
     }
